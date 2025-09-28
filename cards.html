@@ -91,6 +91,45 @@
             background: rgba(45, 45, 48, 0.9);
             backdrop-filter: blur(10px);
         }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: #1a1a1a;
+            border: 1px solid #d4af37;
+            border-radius: 16px;
+            padding: 24px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.visible .modal-content {
+            transform: scale(1);
+        }
     </style>
 </head>
 <body class="bg-gray-900 text-white min-h-screen">
@@ -175,252 +214,18 @@
         </div>
     </nav>
     
-    <script>
-        // Tarot cards data
-        const tarotCards = [
-            { name: 'Шут', image: 'https://kimi-web-img.moonshot.cn/img/astromatrix.app/b4f6ec4580fdefa8570ab219f05b0746b8411f8f.jpg', meaning: 'Новое начало, спонтанность, потенциал' },
-            { name: 'Маг', image: 'https://kimi-web-img.moonshot.cn/img/i0.wp.com/f0d392a2a121f1f33a434eefb4b89eb29ce4429c.jpg', meaning: 'Сила воли, мастерство, создание' },
-            { name: 'Жрица', image: 'https://kimi-web-img.moonshot.cn/img/lilithsattic.com/8bf21401f9bdecfb7786c2fba53ddd46c9364a81.jpg', meaning: 'Интуиция, тайные знания, внутренний голос' },
-            { name: 'Императрица', image: 'https://kimi-web-img.moonshot.cn/img/kajabi-storefronts-production.kajabi-cdn.com/1865697da5ca7641e511f5d7c0ed045ee5ceafb1.jpg', meaning: 'Плодородие, изобилие, материнство' },
-            { name: 'Император', image: 'https://kimi-web-img.moonshot.cn/img/cdn.shopify.com/fee1fd1f1720a1b155e8077e6fdde2458d452ae4.webp', meaning: 'Авторитет, структура, контроль' },
-            { name: 'Жрец', image: 'https://kimi-web-img.moonshot.cn/img/i0.wp.com/ddea5cc9829d8212f8251869e50f48ec8f28621e.jpg', meaning: 'Традиции, духовные учения, наставник' },
-            { name: 'Влюбленные', image: 'https://kimi-web-img.moonshot.cn/img/img.freepik.com/9a5165cf3ee16ef839cf11cee25b028113560756.jpg', meaning: 'Любовь, союз, выбор' },
-            { name: 'Колесница', image: 'https://kimi-web-img.moonshot.cn/img/cdn.shopify.com/2bdc2ee21d56102d09ff8aefdc95ee123abd105a.webp', meaning: 'Победа, контроль, движение вперёд' },
-            { name: 'Сила', image: 'https://kimi-web-img.moonshot.cn/img/upload.wikimedia.org/eef1b82886f5789b4aede0ce9579db0a678c7f69.png', meaning: 'Внутренняя сила, мужество, терпение' },
-            { name: 'Отшельник', image: 'https://kimi-web-img.moonshot.cn/img/images.squarespace-cdn.com/0cb8cd510cbd8cc03884d9b13f57f7e68d887675.jpeg', meaning: 'Поиск, саморефлексия, одиночество' },
-            { name: 'Колесо Фортуны', image: 'https://kimi-web-img.moonshot.cn/img/i.etsystatic.com/e9b9030c7ff091d71e80ac67c6917a138f7759e3.jpg', meaning: 'Судьба, перемены, удача' },
-            { name: 'Справедливость', image: 'https://kimi-web-img.moonshot.cn/img/images.squarespace-cdn.com/10c057237550f7a0b77ddd43ef0cc2a393c417ab.jpg', meaning: 'Баланс, правда, справедливость' },
-            { name: 'Повешенный', image: 'https://kimi-web-img.moonshot.cn/img/m.media-amazon.com/9a2850928fe555cfc20a426a08a14281fb8aa600.jpg', meaning: 'Жертва, новая перспектива, ожидание' },
-            { name: 'Смерть', image: 'https://kimi-web-img.moonshot.cn/img/thumbs.dreamstime.com/b0738ff6849468e92b16d1cce38f0f1d3dba5b7c.jpg', meaning: 'Трансформация, конец, новое начало' },
-            { name: 'Умеренность', image: 'https://kimi-web-img.moonshot.cn/img/ih1.redbubble.net/fcc131738b36a8d5046260abb26db2b187562171.jpg', meaning: 'Баланс, гармония, терпение' },
-            { name: 'Дьявол', image: 'https://kimi-web-img.moonshot.cn/img/images.creativemarket.com/52f47112da1aac3bfaa0470046e9113b038d5cec.jpg', meaning: 'Искушение, зависимость, ограничения' },
-            { name: 'Башня', image: 'https://kimi-web-img.moonshot.cn/img/i.etsystatic.com/2ecc1e57a2e021319d17e37761d2b35b0202f0c0.jpg', meaning: 'Разрушение, внезапные изменения, освобождение' },
-            { name: 'Звезда', image: 'https://kimi-web-img.moonshot.cn/img/as2.ftcdn.net/5269100d3ae4114bfc742f610a82d66b88397001.jpg', meaning: 'Надежда, вдохновение, руководство' },
-            { name: 'Луна', image: 'https://kimi-web-img.moonshot.cn/img/mjdorian.com/11c9e4299d484b17d36f9e484a26cf95165e52c2.jpg', meaning: 'Иллюзия, интуиция, тайны' },
-            { name: 'Солнце', image: 'https://kimi-web-img.moonshot.cn/img/i.redd.it/eccbebad8e53fd3240c2078abc05517cff155cca.jpg', meaning: 'Радость, успех, ясность' },
-            { name: 'Суд', image: 'https://kimi-web-img.moonshot.cn/img/lilithsattic.com/afa210b722b1cd285f8465c24f387e840d921ad5.jpg', meaning: 'Пробуждение, прощение, новое начало' },
-            { name: 'Мир', image: 'https://kimi-web-img.moonshot.cn/img/ionagrant.com/2024f2040c9e7e1e5377ea93bfffdb373c2f2632.jpg', meaning: 'Завершение, достижение, целостность' }
-        ];
-        
-        // Spread configurations
-        const spreads = {
-            single: { name: 'Карта дня', cards: 1 },
-            celtic: { name: 'Кельтский крест', cards: 10 },
-            love: { name: 'Отношения', cards: 6 },
-            career: { name: 'Карьера', cards: 7 }
-        };
-        
-        let selectedSpread = localStorage.getItem('selectedSpread') || 'single';
-        let selectedCards = [];
-        let currentSpread = spreads[selectedSpread];
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            initializePage();
-            generateCards();
-            setupEventListeners();
-            
-            // Animate elements
-            anime({
-                targets: '.fade-in',
-                opacity: [0, 1],
-                translateY: [20, 0],
-                duration: 800,
-                delay: anime.stagger(100)
-            });
-        });
-        
-        function initializePage() {
-            document.getElementById('spread-name').textContent = currentSpread.name;
-            document.getElementById('cards-needed').textContent = currentSpread.cards;
-        }
-        
-        function generateCards() {
-            const container = document.getElementById('cards-container');
-            const shuffledCards = [...tarotCards].sort(() => Math.random() - 0.5);
-            
-            container.innerHTML = '';
-            
-            for (let i = 0; i < 22; i++) {
-                const cardElement = document.createElement('div');
-                cardElement.className = 'tarot-card';
-                cardElement.dataset.cardIndex = i;
-                cardElement.dataset.cardId = shuffledCards[i].name;
-                
-                cardElement.innerHTML = `
-                    <div class="card-front">
-                        <div class="w-full h-full golden-gradient rounded-lg flex items-center justify-center">
-                            <span class="text-2xl">✨</span>
-                        </div>
-                    </div>
-                    <div class="card-back">
-                        <img src="${shuffledCards[i].image}" alt="${shuffledCards[i].name}" class="rounded-lg">
-                    </div>
-                `;
-                
-                container.appendChild(cardElement);
-            }
-        }
-        
-        function setupEventListeners() {
-            document.querySelectorAll('.tarot-card').forEach(card => {
-                card.addEventListener('click', function() {
-                    selectCard(this);
-                });
-            });
-            
-            document.getElementById('get-reading-btn').addEventListener('click', function() {
-                getReading();
-            });
-            
-            // Navigation handlers
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const page = this.dataset.page;
-                    navigateToPage(page);
-                });
-            });
-        }
-        
-        function selectCard(cardElement) {
-            if (selectedCards.length >= currentSpread.cards) {
-                showMessage('Вы уже выбрали достаточно карт');
-                return;
-            }
-            
-            if (cardElement.classList.contains('flipped')) {
-                return; // Card already selected
-            }
-            
-            // Flip card animation
-            anime({
-                targets: cardElement,
-                rotateY: 180,
-                duration: 600,
-                easing: 'easeInOutQuad',
-                complete: function() {
-                    cardElement.classList.add('flipped', 'card-selected');
-                }
-            });
-            
-            // Add card to selected
-            const cardName = cardElement.dataset.cardId;
-            const cardData = tarotCards.find(card => card.name === cardName);
-            selectedCards.push(cardData);
-            
-            updateProgress();
-            updateSelectedCardsDisplay();
-        }
-        
-        function updateProgress() {
-            const selected = selectedCards.length;
-            const needed = currentSpread.cards;
-            const progress = (selected / needed) * 100;
-            
-            document.getElementById('cards-selected').textContent = selected;
-            document.getElementById('progress-bar').style.width = progress + '%';
-            
-            if (selected === needed) {
-                document.getElementById('get-reading-btn').classList.remove('hidden');
-                anime({
-                    targets: '#get-reading-btn',
-                    opacity: [0, 1],
-                    translateY: [20, 0],
-                    duration: 500
-                });
-            }
-        }
-        
-        function updateSelectedCardsDisplay() {
-            const container = document.getElementById('selected-cards-display');
-            const cardsContainer = document.getElementById('selected-cards-container');
-            
-            if (selectedCards.length > 0) {
-                container.classList.remove('hidden');
-                
-                cardsContainer.innerHTML = '';
-                selectedCards.forEach((card, index) => {
-                    const cardElement = document.createElement('div');
-                    cardElement.className = 'flex-shrink-0 w-16 h-24 rounded-lg overflow-hidden';
-                    cardElement.innerHTML = `
-                        <img src="${card.image}" alt="${card.name}" class="w-full h-full object-cover">
-                        <p class="text-xs text-center mt-1 text-gray-400">${card.name}</p>
-                    `;
-                    cardsContainer.appendChild(cardElement);
-                });
-            }
-        }
-        
-        function getReading() {
-            // Show loading
-            document.getElementById('loading-overlay').classList.remove('hidden');
-            
-            // Save reading data
-            const readingData = {
-                spreadType: selectedSpread,
-                spreadName: currentSpread.name,
-                cards: selectedCards,
-                date: new Date().toISOString()
-            };
-            
-            localStorage.setItem('currentReading', JSON.stringify(readingData));
-            
-            // Save to history
-            const history = JSON.parse(localStorage.getItem('taroHistory') || '[]');
-            history.unshift(readingData);
-            if (history.length > 10) history.pop(); // Keep only last 10
-            localStorage.setItem('taroHistory', JSON.stringify(history));
-            
-            // Navigate to reading page after delay
-            setTimeout(() => {
-                window.location.href = 'reading.html';
-            }, 2000);
-        }
-        
-        function showMessage(message) {
-            // Simple toast message
-            const toast = document.createElement('div');
-            toast.className = 'fixed top-20 left-4 right-4 bg-gray-800 text-white p-3 rounded-lg z-50';
-            toast.textContent = message;
-            document.body.appendChild(toast);
-            
-            anime({
-                targets: toast,
-                opacity: [0, 1],
-                translateY: [-20, 0],
-                duration: 300,
-                complete: function() {
-                    setTimeout(() => {
-                        anime({
-                            targets: toast,
-                            opacity: 0,
-                            translateY: -20,
-                            duration: 300,
-                            complete: function() {
-                                document.body.removeChild(toast);
-                            }
-                        });
-                    }, 2000);
-                }
-            });
-        }
-        
-        function navigateToPage(page) {
-            switch(page) {
-                case 'home':
-                    window.location.href = 'index.html';
-                    break;
-                case 'cards':
-                    // Already on cards page
-                    break;
-                case 'history':
-                    window.location.href = 'history.html';
-                    break;
-            }
-        }
-        
-        function goBack() {
-            window.location.href = 'index.html';
-        }
-    </script>
+    <!-- Card Detail Modal -->
+    <div id="card-modal" class="modal-overlay">
+        <div class="modal-content">
+            <img id="modal-card-image" src="" alt="Card Image" class="w-32 h-48 mx-auto mb-4 rounded-lg border-2 border-golden-400">
+            <h3 id="modal-card-name" class="text-2xl font-bold golden-text mb-2"></h3>
+            <p id="modal-card-meaning" class="text-gray-300 text-sm leading-relaxed max-h-40 overflow-y-auto mb-4"></p>
+            <button id="modal-close-btn" class="w-full bg-gray-700 text-white font-semibold py-3 rounded-xl">
+                Закрыть
+            </button>
+        </div>
+    </div>
+
+    <script src="js/cards.js" defer></script>
 </body>
 </html>

@@ -70,6 +70,7 @@
         
         .card-position {
             position: relative;
+            cursor: pointer;
         }
         
         .position-number {
@@ -86,6 +87,45 @@
             justify-content: center;
             font-size: 12px;
             font-weight: bold;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: #1a1a1a;
+            border: 1px solid #d4af37;
+            border-radius: 16px;
+            padding: 24px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.visible .modal-content {
+            transform: scale(1);
         }
     </style>
 </head>
@@ -180,314 +220,18 @@
         </div>
     </nav>
     
-    <script>
-        let currentReading = null;
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            loadReading();
-            displayCards();
-            generateReading();
-            setupEventListeners();
-            
-            // Animate elements
-            anime.timeline()
-                .add({
-                    targets: '.fade-in',
-                    opacity: [0, 1],
-                    translateY: [30, 0],
-                    duration: 800,
-                    delay: anime.stagger(200)
-                })
-                .add({
-                    targets: '.slide-in-up',
-                    opacity: [0, 1],
-                    translateY: [50, 0],
-                    duration: 600
-                }, '-=400');
-        });
-        
-        function loadReading() {
-            const readingData = localStorage.getItem('currentReading');
-            if (!readingData) {
-                window.location.href = 'index.html';
-                return;
-            }
-            
-            currentReading = JSON.parse(readingData);
-            document.getElementById('spread-type').textContent = currentReading.spreadName;
-        }
-        
-        function displayCards() {
-            const container = document.getElementById('cards-display');
-            container.innerHTML = '';
-            
-            currentReading.cards.forEach((card, index) => {
-                const cardElement = document.createElement('div');
-                cardElement.className = 'card-position flex-shrink-0';
-                
-                cardElement.innerHTML = `
-                    <div class="tarot-card-display mystical-glow">
-                        <img src="${card.image}" alt="${card.name}">
-                    </div>
-                    <div class="position-number">${index + 1}</div>
-                    <p class="text-xs text-center mt-2 text-gray-300">${card.name}</p>
-                `;
-                
-                container.appendChild(cardElement);
-            });
-        }
-        
-        function generateReading() {
-            const spreadType = currentReading.spreadType;
-            const cards = currentReading.cards;
-            
-            // Generate general reading based on spread type and cards
-            const generalReading = generateGeneralReading(spreadType, cards);
-            document.getElementById('general-reading').textContent = generalReading;
-            
-            // Generate individual card meanings
-            generateIndividualCards(cards);
-            
-            // Generate advice
-            const advice = generateAdvice(cards);
-            document.getElementById('advice-reading').textContent = advice;
-        }
-        
-        function generateGeneralReading(spreadType, cards) {
-            const readings = {
-                single: [
-                    'Карта дня указывает на важный аспект, который требует вашего внимания.',
-                    'Сегодняшняя энергия направлена на саморазвитие и внутреннюю работу.',
-                    'День благоприятен для новых начинаний и важных решений.'
-                ],
-                celtic: [
-                    'Кельтский крест раскрывает глубокую информацию о вашей текущей жизненной ситуации.',
-                    'Карты показывают сложную динамику событий и влияний в вашей жизни.',
-                    'Полный расклад указывает на важные жизненные уроки и возможности.'
-                ],
-                love: [
-                    'Карты отношений раскрывают глубокую динамику вашей личной жизни.',
-                    'Энергия любви и гармонии присутствует в вашей жизненной ситуации.',
-                    'Важные откровения о ваших чувствах и отношениях становятся ясны.'
-                ],
-                career: [
-                    'Карты карьеры указывают на важные профессиональные возможности.',
-                    'Ваша карьерная траектория находится в точке важных перемен.',
-                    'Успех и признание возможны при правильном подходе к работе.'
-                ]
-            };
-            
-            const spreadReadings = readings[spreadType] || readings.single;
-            const baseReading = spreadReadings[Math.floor(Math.random() * spreadReadings.length)];
-            
-            // Add card-specific insights
-            const cardInsights = cards.map(card => {
-                const keywords = card.meaning.split(', ');
-                return keywords[Math.floor(Math.random() * keywords.length)];
-            }).join(', ');
-            
-            return `${baseReading} Основные темы: ${cardInsights}.`;
-        }
-        
-        function generateIndividualCards(cards) {
-            const container = document.getElementById('individual-cards');
-            container.innerHTML = '';
-            
-            const positions = {
-                single: ['Ваш путь'],
-                celtic: ['Прошлое', 'Настоящее', 'Будущее', 'Причина', 'Влияние', 'Ближайшее будущее', 'Ваш подход', 'Внешнее влияние', 'Надежды', 'Итог'],
-                love: ['Вы', 'Партнер', 'Отношения', 'Проблемы', 'Решение', 'Будущее'],
-                career: ['Текущая работа', 'Цели', 'Проблемы', 'Помощь', 'Решения', 'Будущее', 'Успех']
-            };
-            
-            const spreadPositions = positions[currentReading.spreadType] || positions.single;
-            
-            cards.forEach((card, index) => {
-                const cardElement = document.createElement('div');
-                cardElement.className = 'reading-card rounded-xl p-6';
-                
-                cardElement.innerHTML = `
-                    <div class="flex items-start space-x-4">
-                        <div class="w-16 h-24 rounded-lg overflow-hidden flex-shrink-0">
-                            <img src="${card.image}" alt="${card.name}" class="w-full h-full object-cover">
-                        </div>
-                        <div class="flex-1">
-                            <h4 class="font-semibold text-white mb-1">${card.name}</h4>
-                            <p class="text-sm golden-text mb-2">${spreadPositions[index] || 'Позиция ' + (index + 1)}</p>
-                            <p class="text-gray-300 text-sm leading-relaxed">${generateCardInterpretation(card, index, cards.length)}</p>
-                        </div>
-                    </div>
-                `;
-                
-                container.appendChild(cardElement);
-            });
-        }
-        
-        function generateCardInterpretation(card, index, totalCards) {
-            const baseMeaning = card.meaning;
-            
-            // Add position-specific interpretation
-            const positionInsights = {
-                0: 'Карта указывает на основную энергию и влияние в вашей жизни.',
-                1: 'Вторая карта показывает важные факторы и влияния.',
-                2: 'Третья карта раскрывает потенциальные возможности.',
-                3: 'Четвертая карта указывает на скрытые аспекты ситуации.',
-                4: 'Пятая карта показывает внешние влияния и поддержку.',
-                5: 'Шестая карта раскрывает ближайшие перспективы.',
-                6: 'Седьмая карта указывает на ваш личный подход.',
-                7: 'Восьмая карта показывает окружающую обстановку.',
-                8: 'Девятая карта раскрывает ваши надежды и страхи.',
-                9: 'Десятая карта показывает итоговый результат.'
-            };
-            
-            const positionInsight = positionInsights[index] || 'Карта предоставляет важную информацию.';
-            return `${baseMeaning} ${positionInsight}`;
-        }
-        
-        function generateAdvice(cards) {
-            const adviceTemplates = [
-                'Карты советуют вам довериться своей интуиции и принять решения сердцем.',
-                'Важно сохранять баланс между логикой и чувствами в текущей ситуации.',
-                'Пора действовать решительно, не откладывая важные дела.',
-                'Терпение и настойчивость приведут к желаемому результату.',
-                'Обратите внимание на знаки судьбы и возможности вокруг.',
-                'Измените подход к решению проблемы для достижения успеха.',
-                'Доверьтесь процессу и позвольте событиям развиваться естественно.'
-            ];
-            
-            // Generate advice based on card combinations
-            const hasPositiveCards = cards.some(card => 
-                card.name.includes('Солнце') || 
-                card.name.includes('Звезда') || 
-                card.name.includes('Мир')
-            );
-            
-            const hasChallengingCards = cards.some(card => 
-                card.name.includes('Башня') || 
-                card.name.includes('Дьявол') || 
-                card.name.includes('Смерть')
-            );
-            
-            let advice;
-            if (hasPositiveCards && !hasChallengingCards) {
-                advice = 'Отличное время для новых начинаний и важных решений. Используйте позитивную энергию.';
-            } else if (hasChallengingCards && !hasPositiveCards) {
-                advice = 'Период испытаний требует терпения и мудрости. Это время для внутренней работы.';
-            } else {
-                advice = adviceTemplates[Math.floor(Math.random() * adviceTemplates.length)];
-            }
-            
-            return advice;
-        }
-        
-        function setupEventListeners() {
-            document.getElementById('save-reading-btn').addEventListener('click', saveReading);
-            document.getElementById('new-reading-btn').addEventListener('click', newReading);
-            document.getElementById('share-reading-btn').addEventListener('click', shareReading);
-            
-            // Navigation handlers
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const page = this.dataset.page;
-                    navigateToPage(page);
-                });
-            });
-        }
-        
-        function saveReading() {
-            // Reading is already saved in localStorage
-            showSuccessMessage();
-        }
-        
-        function newReading() {
-            window.location.href = 'index.html';
-        }
-        
-        function shareReading() {
-            const shareText = `Моё таро-предсказание (${currentReading.spreadName}): ${currentReading.cards.map(card => card.name).join(', ')}`;
-            
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Taro Telegram - Моё предсказание',
-                    text: shareText
-                });
-            } else {
-                // Fallback - copy to clipboard
-                navigator.clipboard.writeText(shareText).then(() => {
-                    showMessage('Предсказание скопировано в буфер обмена');
-                });
-            }
-        }
-        
-        function showSuccessMessage() {
-            const message = document.getElementById('success-message');
-            message.classList.remove('hidden');
-            
-            anime({
-                targets: message,
-                opacity: [0, 1],
-                translateY: [-20, 0],
-                duration: 300,
-                complete: function() {
-                    setTimeout(() => {
-                        anime({
-                            targets: message,
-                            opacity: 0,
-                            translateY: -20,
-                            duration: 300,
-                            complete: function() {
-                                message.classList.add('hidden');
-                            }
-                        });
-                    }, 3000);
-                }
-            });
-        }
-        
-        function showMessage(message) {
-            const toast = document.createElement('div');
-            toast.className = 'fixed top-20 left-4 right-4 bg-gray-800 text-white p-3 rounded-lg z-50';
-            toast.textContent = message;
-            document.body.appendChild(toast);
-            
-            anime({
-                targets: toast,
-                opacity: [0, 1],
-                translateY: [-20, 0],
-                duration: 300,
-                complete: function() {
-                    setTimeout(() => {
-                        anime({
-                            targets: toast,
-                            opacity: 0,
-                            translateY: -20,
-                            duration: 300,
-                            complete: function() {
-                                document.body.removeChild(toast);
-                            }
-                        });
-                    }, 2000);
-                }
-            });
-        }
-        
-        function navigateToPage(page) {
-            switch(page) {
-                case 'home':
-                    window.location.href = 'index.html';
-                    break;
-                case 'cards':
-                    window.location.href = 'cards.html';
-                    break;
-                case 'history':
-                    window.location.href = 'history.html';
-                    break;
-            }
-        }
-        
-        function goBack() {
-            window.location.href = 'cards.html';
-        }
-    </script>
+    <!-- Card Detail Modal -->
+    <div id="card-modal" class="modal-overlay">
+        <div class="modal-content">
+            <img id="modal-card-image" src="" alt="Card Image" class="w-32 h-48 mx-auto mb-4 rounded-lg border-2 border-golden-400">
+            <h3 id="modal-card-name" class="text-2xl font-bold golden-text mb-2"></h3>
+            <p id="modal-card-meaning" class="text-gray-300 text-sm leading-relaxed max-h-40 overflow-y-auto mb-4"></p>
+            <button id="modal-close-btn" class="w-full bg-gray-700 text-white font-semibold py-3 rounded-xl">
+                Закрыть
+            </button>
+        </div>
+    </div>
+
+    <script src="js/reading.js" defer></script>
 </body>
 </html>
