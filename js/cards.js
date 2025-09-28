@@ -11,11 +11,15 @@ let selectedSpread = localStorage.getItem('selectedSpread') || 'single';
 let selectedCards = [];
 let currentSpread = spreads[selectedSpread];
 
+// Modal elements
+let modal, modalImage, modalName, modalMeaning, modalCloseBtn;
+
 document.addEventListener('DOMContentLoaded', async function() {
     await loadCardData();
     initializePage();
     generateCards();
     setupEventListeners();
+    setupModal(); // Initialize modal elements and listeners
 
     // Animate elements
     anime({
@@ -47,6 +51,12 @@ function generateCards() {
     const shuffledCards = [...tarotCards].sort(() => Math.random() - 0.5);
 
     container.innerHTML = '';
+
+    // Ensure we have enough cards to avoid errors
+    if (shuffledCards.length < 22) {
+        console.error("Not enough cards in data source.");
+        return;
+    }
 
     for (let i = 0; i < 22; i++) {
         const cardElement = document.createElement('div');
@@ -95,14 +105,22 @@ function setupEventListeners() {
 }
 
 function selectCard(cardElement) {
+    const cardName = cardElement.dataset.cardId;
+    const cardData = tarotCards.find(card => card.name === cardName);
+
+    if (cardElement.classList.contains('flipped')) {
+        // If card is already flipped, just show the modal
+        showCardModal(cardData);
+        return;
+    }
+
     if (selectedCards.length >= currentSpread.cards) {
         showMessage('Вы уже выбрали достаточно карт');
         return;
     }
 
-    if (cardElement.classList.contains('flipped')) {
-        return; // Card already selected
-    }
+    // Add card to selected list
+    selectedCards.push(cardData);
 
     // Flip card animation
     anime({
@@ -112,13 +130,10 @@ function selectCard(cardElement) {
         easing: 'easeInOutQuad',
         complete: function() {
             cardElement.classList.add('flipped', 'card-selected');
+            // Show modal after animation
+            showCardModal(cardData);
         }
     });
-
-    // Add card to selected
-    const cardName = cardElement.dataset.cardId;
-    const cardData = tarotCards.find(card => card.name === cardName);
-    selectedCards.push(cardData);
 
     updateProgress();
     updateSelectedCardsDisplay();
@@ -151,13 +166,16 @@ function updateSelectedCardsDisplay() {
         container.classList.remove('hidden');
 
         cardsContainer.innerHTML = '';
-        selectedCards.forEach((card, index) => {
+        selectedCards.forEach((card) => {
             const cardElement = document.createElement('div');
-            cardElement.className = 'flex-shrink-0 w-16 h-24 rounded-lg overflow-hidden';
+            // Make the preview clickable
+            cardElement.className = 'flex-shrink-0 w-16 h-24 rounded-lg overflow-hidden cursor-pointer';
             cardElement.innerHTML = `
                 <img src="${card.image}" alt="${card.name}" class="w-full h-full object-cover">
                 <p class="text-xs text-center mt-1 text-gray-400">${card.name}</p>
             `;
+            // Add listener to show modal on click
+            cardElement.addEventListener('click', () => showCardModal(card));
             cardsContainer.appendChild(cardElement);
         });
     }
@@ -232,6 +250,38 @@ function goBack() {
     window.location.href = 'index.html';
 }
 
+// --- Modal Logic ---
+
+function setupModal() {
+    modal = document.getElementById('card-modal');
+    modalImage = document.getElementById('modal-card-image');
+    modalName = document.getElementById('modal-card-name');
+    modalMeaning = document.getElementById('modal-card-meaning');
+    modalCloseBtn = document.getElementById('modal-close-btn');
+
+    // Close modal when clicking the overlay or the close button
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            hideCardModal();
+        }
+    });
+    modalCloseBtn.addEventListener('click', hideCardModal);
+}
+
+function showCardModal(card) {
+    if (!card) return;
+    modalImage.src = card.image;
+    modalImage.alt = card.name;
+    modalName.textContent = card.name;
+    modalMeaning.textContent = card.full_meaning || card.meaning; // Use full meaning
+    modal.classList.add('visible');
+}
+
+function hideCardModal() {
+    modal.classList.remove('visible');
+}
+
+// Export functions for testing if needed in the future
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         spreads,
@@ -239,6 +289,8 @@ if (typeof module !== 'undefined' && module.exports) {
         initializePage,
         generateCards,
         selectCard,
-        getReading
+        getReading,
+        showCardModal,
+        hideCardModal
     };
 }
