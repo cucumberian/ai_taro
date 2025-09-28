@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taro Telegram - Мистические предсказания</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.3.2/pixi.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: #1a1a1a;
+            overflow-x: hidden;
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:active {
+            transform: scale(0.98);
+        }
+        
+        .golden-gradient {
+            background: linear-gradient(135deg, #d4af37, #ffd700, #b8860b);
+        }
+        
+        .golden-text {
+            background: linear-gradient(135deg, #d4af37, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .mystical-glow {
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+        }
+        
+        .particle-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        .slide-in-left {
+            opacity: 0;
+            transform: translateX(-50px);
+        }
+        
+        .slide-in-right {
+            opacity: 0;
+            transform: translateX(50px);
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <!-- Particle Background -->
+    <div id="particle-container" class="particle-bg"></div>
+    
+    <!-- Header -->
+    <header class="px-4 py-6 text-center fade-in">
+        <h1 class="text-3xl font-bold golden-text mb-2">Taro Telegram</h1>
+        <p class="text-gray-400 text-sm">Откройте тайны судьбы</p>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="px-4 pb-24">
+        <!-- Hero Section -->
+        <section class="text-center mb-8 fade-in">
+            <div class="w-24 h-24 mx-auto mb-4 golden-gradient rounded-full flex items-center justify-center">
+                <span class="text-2xl">🔮</span>
+            </div>
+            <h2 class="text-xl font-semibold mb-2">Добро пожаловать в мир таро</h2>
+            <p class="text-gray-400 text-sm">Выберите расклад и получите предсказание</p>
+        </section>
+        
+        <!-- Tarot Spreads -->
+        <section class="space-y-4">
+            <h3 class="text-lg font-semibold text-gray-300 mb-4 slide-in-left">Доступные расклады</h3>
+            
+            <!-- Single Card Spread -->
+            <div class="tarot-spread-card bg-gray-800 rounded-xl p-4 card-hover slide-in-left" data-spread="single">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 golden-gradient rounded-lg flex items-center justify-center">
+                        <span class="text-lg">🌟</span>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-semibold text-white mb-1">Карта дня</h4>
+                        <p class="text-gray-400 text-sm">Быстрое предсказание на день</p>
+                        <span class="text-xs text-gray-500">1 карта</span>
+                    </div>
+                    <div class="text-gray-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Celtic Cross Spread -->
+            <div class="tarot-spread-card bg-gray-800 rounded-xl p-4 card-hover slide-in-right" data-spread="celtic">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 golden-gradient rounded-lg flex items-center justify-center">
+                        <span class="text-lg">✨</span>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-semibold text-white mb-1">Кельтский крест</h4>
+                        <p class="text-gray-400 text-sm">Полный анализ ситуации</p>
+                        <span class="text-xs text-gray-500">10 карт</span>
+                    </div>
+                    <div class="text-gray-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Love Spread -->
+            <div class="tarot-spread-card bg-gray-800 rounded-xl p-4 card-hover slide-in-left" data-spread="love">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 golden-gradient rounded-lg flex items-center justify-center">
+                        <span class="text-lg">💕</span>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-semibold text-white mb-1">Отношения</h4>
+                        <p class="text-gray-400 text-sm">Анализ любовных отношений</p>
+                        <span class="text-xs text-gray-500">6 карт</span>
+                    </div>
+                    <div class="text-gray-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Career Spread -->
+            <div class="tarot-spread-card bg-gray-800 rounded-xl p-4 card-hover slide-in-right" data-spread="career">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 golden-gradient rounded-lg flex items-center justify-center">
+                        <span class="text-lg">💼</span>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-semibold text-white mb-1">Карьера</h4>
+                        <p class="text-gray-400 text-sm">Профессиональные перспективы</p>
+                        <span class="text-xs text-gray-500">7 карт</span>
+                    </div>
+                    <div class="text-gray-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- History Section -->
+        <section class="mt-8">
+            <h3 class="text-lg font-semibold text-gray-300 mb-4 slide-in-left">История предсказаний</h3>
+            <div id="history-container" class="space-y-3">
+                <div class="bg-gray-800 rounded-lg p-3 text-center">
+                    <p class="text-gray-400 text-sm">История предсказаний появится здесь</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Bottom Navigation -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-gray-800 border-t border-gray-700 px-4 py-3">
+        <div class="flex justify-around items-center">
+            <button class="nav-btn flex flex-col items-center space-y-1 text-golden-400" data-page="home">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+                </svg>
+                <span class="text-xs">Главная</span>
+            </button>
+            <button class="nav-btn flex flex-col items-center space-y-1 text-gray-400" data-page="cards">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                </svg>
+                <span class="text-xs">Карты</span>
+            </button>
+            <button class="nav-btn flex flex-col items-center space-y-1 text-gray-400" data-page="history">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span class="text-xs">История</span>
+            </button>
+        </div>
+    </nav>
+    
+    <script>
+        // Initialize animations
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate elements on load
+            anime.timeline()
+                .add({
+                    targets: '.fade-in',
+                    opacity: [0, 1],
+                    translateY: [20, 0],
+                    duration: 800,
+                    delay: anime.stagger(100)
+                })
+                .add({
+                    targets: '.slide-in-left',
+                    opacity: [0, 1],
+                    translateX: [-50, 0],
+                    duration: 600,
+                    delay: anime.stagger(100)
+                }, '-=400')
+                .add({
+                    targets: '.slide-in-right',
+                    opacity: [0, 1],
+                    translateX: [50, 0],
+                    duration: 600,
+                    delay: anime.stagger(100)
+                }, '-=400');
+            
+            // Initialize particle background
+            initParticles();
+            
+            // Add click handlers for tarot spreads
+            document.querySelectorAll('.tarot-spread-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const spreadType = this.dataset.spread;
+                    selectSpread(spreadType);
+                });
+            });
+            
+            // Navigation handlers
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const page = this.dataset.page;
+                    navigateToPage(page);
+                });
+            });
+            
+            // Load history
+            loadHistory();
+        });
+        
+        function initParticles() {
+            const app = new PIXI.Application({
+                width: window.innerWidth,
+                height: window.innerHeight,
+                backgroundColor: 0x1a1a1a,
+                backgroundAlpha: 0
+            });
+            
+            document.getElementById('particle-container').appendChild(app.view);
+            
+            // Create particles
+            const particles = [];
+            for (let i = 0; i < 50; i++) {
+                const particle = new PIXI.Graphics();
+                particle.beginFill(0xd4af37, 0.3);
+                particle.drawCircle(0, 0, Math.random() * 2 + 1);
+                particle.endFill();
+                
+                particle.x = Math.random() * app.screen.width;
+                particle.y = Math.random() * app.screen.height;
+                particle.vx = (Math.random() - 0.5) * 0.5;
+                particle.vy = (Math.random() - 0.5) * 0.5;
+                
+                app.stage.addChild(particle);
+                particles.push(particle);
+            }
+            
+            // Animate particles
+            app.ticker.add(() => {
+                particles.forEach(particle => {
+                    particle.x += particle.vx;
+                    particle.y += particle.vy;
+                    
+                    if (particle.x < 0) particle.x = app.screen.width;
+                    if (particle.x > app.screen.width) particle.x = 0;
+                    if (particle.y < 0) particle.y = app.screen.height;
+                    if (particle.y > app.screen.height) particle.y = 0;
+                });
+            });
+        }
+        
+        function selectSpread(spreadType) {
+            // Animate card selection
+            const card = document.querySelector(`[data-spread="${spreadType}"]`);
+            
+            anime({
+                targets: card,
+                scale: [1, 0.95, 1],
+                duration: 200,
+                complete: function() {
+                    // Store selected spread and navigate
+                    localStorage.setItem('selectedSpread', spreadType);
+                    window.location.href = 'cards.html';
+                }
+            });
+        }
+        
+        function navigateToPage(page) {
+            // Update active nav button
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-golden-400');
+                btn.classList.add('text-gray-400');
+            });
+            
+            document.querySelector(`[data-page="${page}"]`).classList.remove('text-gray-400');
+            document.querySelector(`[data-page="${page}"]`).classList.add('text-golden-400');
+            
+            // Navigate based on page
+            switch(page) {
+                case 'home':
+                    // Already on home
+                    break;
+                case 'cards':
+                    window.location.href = 'cards.html';
+                    break;
+                case 'history':
+                    window.location.href = 'history.html';
+                    break;
+            }
+        }
+        
+        function loadHistory() {
+            const history = JSON.parse(localStorage.getItem('taroHistory') || '[]');
+            const container = document.getElementById('history-container');
+            
+            if (history.length === 0) {
+                return; // Keep default message
+            }
+            
+            container.innerHTML = '';
+            history.slice(0, 3).forEach(item => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'bg-gray-800 rounded-lg p-3';
+                historyItem.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-sm font-medium text-white">${item.spreadName}</p>
+                            <p class="text-xs text-gray-400">${new Date(item.date).toLocaleDateString()}</p>
+                        </div>
+                        <span class="text-xs text-gray-500">${item.cards.length} карт</span>
+                    </div>
+                `;
+                container.appendChild(historyItem);
+            });
+        }
+    </script>
+</body>
+</html>
