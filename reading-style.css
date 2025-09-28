@@ -1,0 +1,124 @@
+body {
+    font-family: "Inter", sans-serif;
+    background: #1a1a1a;
+    overflow-x: hidden;
+}
+
+.tarot-card-display {
+    width: 100px;
+    height: 150px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.tarot-card-display img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.golden-gradient {
+    background: linear-gradient(135deg, #d4af37, #ffd700, #b8860b);
+}
+
+.golden-text {
+    background: linear-gradient(135deg, #d4af37, #ffd700);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.mystical-glow {
+    box-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
+}
+
+.reading-card {
+    background: rgba(45, 45, 48, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.fade-in {
+    opacity: 0;
+    transform: translateY(30px);
+}
+
+.slide-in-up {
+    opacity: 0;
+    transform: translateY(50px);
+}
+
+.pulse-glow {
+    animation: pulseGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes pulseGlow {
+    from {
+        box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+    }
+
+    to {
+        box-shadow: 0 0 40px rgba(212, 175, 55, 0.6);
+    }
+}
+
+.card-position {
+    position: relative;
+    cursor: pointer;
+}
+
+.position-number {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 24px;
+    height: 24px;
+    background: #d4af37;
+    color: #1a1a1a;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.modal-overlay.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-content {
+    background: #1a1a1a;
+    border: 1px solid #d4af37;
+    border-radius: 16px;
+    padding: 24px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    transform: scale(0.95);
+    transition: transform 0.3s ease;
+}
+
+.modal-overlay.visible .modal-content {
+    transform: scale(1);
+}
