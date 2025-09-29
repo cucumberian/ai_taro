@@ -1,4 +1,4 @@
-import { reactive, toRefs } from 'vue';
+const { reactive, toRefs } = Vue;
 
 const state = reactive({
   history: [],
