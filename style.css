@@ -4,6 +4,53 @@ body {
     overflow-x: hidden;
 }
 
+.card-hover {
+    transition: all 0.3s ease;
+}
+
+.card-hover:active {
+    transform: scale(0.98);
+}
+
+.golden-gradient {
+    background: linear-gradient(135deg, #d4af37, #ffd700, #b8860b);
+}
+
+.golden-text {
+    background: linear-gradient(135deg, #d4af37, #ffd700);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.mystical-glow {
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+}
+
+.particle-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.slide-in-left {
+    opacity: 0;
+    transform: translateX(-50px);
+}
+
+.slide-in-right {
+    opacity: 0;
+    transform: translateX(50px);
+}
+
 .tarot-card {
     width: 80px;
     height: 120px;
@@ -51,22 +98,6 @@ body {
 .card-selected {
     box-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
     transform: scale(1.05);
-}
-
-.golden-gradient {
-    background: linear-gradient(135deg, #d4af37, #ffd700, #b8860b);
-}
-
-.golden-text {
-    background: linear-gradient(135deg, #d4af37, #ffd700);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-.fade-in {
-    opacity: 0;
-    transform: translateY(20px);
 }
 
 .loading-spinner {
@@ -157,4 +188,64 @@ body {
     text-align: center;
     cursor: pointer;
     z-index: 110;
+}
+
+.tarot-card-display {
+    width: 100px;
+    height: 150px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.tarot-card-display img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.reading-card {
+    background: rgba(45, 45, 48, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.slide-in-up {
+    opacity: 0;
+    transform: translateY(50px);
+}
+
+.pulse-glow {
+    animation: pulseGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes pulseGlow {
+    from {
+        box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+    }
+
+    to {
+        box-shadow: 0 0 40px rgba(212, 175, 55, 0.6);
+    }
+}
+
+.card-position {
+    position: relative;
+    cursor: pointer;
+}
+
+.position-number {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 24px;
+    height: 24px;
+    background: #d4af37;
+    color: #1a1a1a;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
 }

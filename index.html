@@ -8,60 +8,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.3.2/pixi.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background: #1a1a1a;
-            overflow-x: hidden;
-        }
-        
-        .card-hover {
-            transition: all 0.3s ease;
-        }
-        
-        .card-hover:active {
-            transform: scale(0.98);
-        }
-        
-        .golden-gradient {
-            background: linear-gradient(135deg, #d4af37, #ffd700, #b8860b);
-        }
-        
-        .golden-text {
-            background: linear-gradient(135deg, #d4af37, #ffd700);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .mystical-glow {
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
-        }
-        
-        .particle-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-        }
-        
-        .fade-in {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        
-        .slide-in-left {
-            opacity: 0;
-            transform: translateX(-50px);
-        }
-        
-        .slide-in-right {
-            opacity: 0;
-            transform: translateX(50px);
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body class="bg-gray-900 text-white min-h-screen">
     <!-- Particle Background -->
