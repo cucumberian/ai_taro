@@ -1,12 +1,12 @@
 let currentReading = null;
 
-// Modal elements
-let modal, modalImage, modalName, modalMeaning, modalCloseBtn;
+// Fullscreen overlay elements
+let fullscreenOverlay, fullscreenImage, fullscreenName, fullscreenMeaning;
 
 document.addEventListener('DOMContentLoaded', function() {
     loadReading();
     if (currentReading) {
-        setupModal(); // Initialize modal elements and listeners
+        setupFullscreenOverlay(); // Initialize fullscreen overlay elements and listeners
         displayCards();
         generateReading();
         setupEventListeners();
@@ -59,7 +59,7 @@ function displayCards() {
         `;
 
         // Add click listener to show the modal for the top cards
-        cardElement.addEventListener('click', () => showCardModal(card));
+        cardElement.addEventListener('click', () => showCardFullscreen(card));
 
         container.appendChild(cardElement);
     });
@@ -125,7 +125,7 @@ function generateIndividualCards(cards, spreadType) {
         `;
 
         // Add click listener to show the modal for the main interpretation cards
-        cardElement.addEventListener('click', () => showCardModal(card));
+        cardElement.addEventListener('click', () => showCardFullscreen(card));
 
         container.appendChild(cardElement);
     });
@@ -270,35 +270,31 @@ function goBack() {
     window.location.href = 'cards.html';
 }
 
-// --- Modal Logic ---
+// --- Fullscreen Overlay Logic ---
 
-function setupModal() {
-    modal = document.getElementById('card-modal');
-    modalImage = document.getElementById('modal-card-image');
-    modalName = document.getElementById('modal-card-name');
-    modalMeaning = document.getElementById('modal-card-meaning');
-    modalCloseBtn = document.getElementById('modal-close-btn');
+function setupFullscreenOverlay() {
+    fullscreenOverlay = document.getElementById("card-fullscreen-overlay");
+    fullscreenImage = document.getElementById("fullscreen-card-image");
+    fullscreenName = document.getElementById("fullscreen-card-name");
+    fullscreenMeaning = document.getElementById("fullscreen-card-meaning");
 
-    // Close modal when clicking the overlay or the close button
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            hideCardModal();
-        }
+    // Close overlay when clicking the overlay background or the close button
+    fullscreenOverlay.addEventListener("click", (e) => {
+        hideCardFullscreen();
     });
-    modalCloseBtn.addEventListener('click', hideCardModal);
 }
 
-function showCardModal(card) {
+function showCardFullscreen(card) {
     if (!card) return;
-    modalImage.src = card.image;
-    modalImage.alt = card.name;
-    modalName.textContent = card.name;
-    modalMeaning.textContent = card.full_meaning || card.meaning; // Use full meaning
-    modal.classList.add('visible');
+    fullscreenImage.src = card.image;
+    fullscreenImage.alt = card.name;
+    fullscreenName.textContent = card.name;
+    fullscreenMeaning.textContent = card.full_meaning || card.meaning; // Use full meaning
+    fullscreenOverlay.classList.add("visible");
 }
 
-function hideCardModal() {
-    modal.classList.remove('visible');
+function hideCardFullscreen() {
+    fullscreenOverlay.classList.remove("visible");
 }
 
 // Export functions for testing if needed
@@ -310,7 +306,7 @@ if (typeof module !== 'undefined' && module.exports) {
         loadReading,
         displayCards,
         generateReading,
-        showCardModal,
-        hideCardModal
+        showCardFullscreen,
+        hideCardFullscreen
     };
 }
