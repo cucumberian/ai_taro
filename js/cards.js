@@ -11,15 +11,15 @@ let selectedSpread = localStorage.getItem('selectedSpread') || 'single';
 let selectedCards = [];
 let currentSpread = spreads[selectedSpread];
 
-// Modal elements
-let modal, modalImage, modalName, modalMeaning, modalCloseBtn;
+// Fullscreen overlay elements
+let fullscreenOverlay, fullscreenImage, fullscreenName, fullscreenMeaning, fullscreenCloseBtn;
 
 document.addEventListener('DOMContentLoaded', async function() {
     await loadCardData();
     initializePage();
     generateCards();
     setupEventListeners();
-    setupModal(); // Initialize modal elements and listeners
+    setupFullscreenOverlay(); // Initialize fullscreen overlay elements and listeners
 
     // Animate elements
     anime({
@@ -109,8 +109,8 @@ function selectCard(cardElement) {
     const cardData = tarotCards.find(card => card.name === cardName);
 
     if (cardElement.classList.contains('flipped')) {
-        // If card is already flipped, just show the modal
-        showCardModal(cardData);
+        // If card is already flipped, just show the fullscreen view
+        showCardFullscreen(cardData);
         return;
     }
 
@@ -130,8 +130,8 @@ function selectCard(cardElement) {
         easing: 'easeInOutQuad',
         complete: function() {
             cardElement.classList.add('flipped', 'card-selected');
-            // Show modal after animation
-            showCardModal(cardData);
+            // Show fullscreen view after animation
+            showCardFullscreen(cardData);
         }
     });
 
@@ -174,8 +174,8 @@ function updateSelectedCardsDisplay() {
                 <img src="${card.image}" alt="${card.name}" class="w-full h-full object-cover">
                 <p class="text-xs text-center mt-1 text-gray-400">${card.name}</p>
             `;
-            // Add listener to show modal on click
-            cardElement.addEventListener('click', () => showCardModal(card));
+            // Add listener to show fullscreen view on click
+            cardElement.addEventListener('click', () => showCardFullscreen(card));
             cardsContainer.appendChild(cardElement);
         });
     }
@@ -250,35 +250,35 @@ function goBack() {
     window.location.href = 'index.html';
 }
 
-// --- Modal Logic ---
+// --- Fullscreen Overlay Logic ---
 
-function setupModal() {
-    modal = document.getElementById('card-modal');
-    modalImage = document.getElementById('modal-card-image');
-    modalName = document.getElementById('modal-card-name');
-    modalMeaning = document.getElementById('modal-card-meaning');
-    modalCloseBtn = document.getElementById('modal-close-btn');
+function setupFullscreenOverlay() {
+    fullscreenOverlay = document.getElementById('card-fullscreen-overlay');
+    fullscreenImage = document.getElementById('fullscreen-card-image');
+    fullscreenName = document.getElementById('fullscreen-card-name');
+    fullscreenMeaning = document.getElementById('fullscreen-card-meaning');
+    fullscreenCloseBtn = document.getElementById('fullscreen-close-btn');
 
-    // Close modal when clicking the overlay or the close button
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            hideCardModal();
+    // Close overlay when clicking the overlay background or the close button
+    fullscreenOverlay.addEventListener('click', (e) => {
+        if (e.target === fullscreenOverlay) {
+            hideCardFullscreen();
         }
     });
-    modalCloseBtn.addEventListener('click', hideCardModal);
+    fullscreenCloseBtn.addEventListener('click', hideCardFullscreen);
 }
 
-function showCardModal(card) {
+function showCardFullscreen(card) {
     if (!card) return;
-    modalImage.src = card.image;
-    modalImage.alt = card.name;
-    modalName.textContent = card.name;
-    modalMeaning.textContent = card.full_meaning || card.meaning; // Use full meaning
-    modal.classList.add('visible');
+    fullscreenImage.src = card.image;
+    fullscreenImage.alt = card.name;
+    fullscreenName.textContent = card.name;
+    fullscreenMeaning.textContent = card.full_meaning || card.meaning; // Use full meaning
+    fullscreenOverlay.classList.add('visible');
 }
 
-function hideCardModal() {
-    modal.classList.remove('visible');
+function hideCardFullscreen() {
+    fullscreenOverlay.classList.remove('visible');
 }
 
 // Export functions for testing if needed in the future
@@ -290,7 +290,7 @@ if (typeof module !== 'undefined' && module.exports) {
         generateCards,
         selectCard,
         getReading,
-        showCardModal,
-        hideCardModal
+        showCardFullscreen,
+        hideCardFullscreen
     };
 }
