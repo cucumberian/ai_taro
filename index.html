@@ -77,7 +77,9 @@
         <!-- Header -->
         <header class="px-4 py-6 text-center fade-in">
             <h1 class="text-3xl font-bold golden-text mb-2">Taro Telegram</h1>
-            <p class="text-gray-400 text-sm">Откройте тайны судьбы</p>
+            <p class="header-welcome text-gray-400 text-sm">
+                Откройте тайны судьбы
+            </p>
         </header>
 
         <!-- Main Content -->
@@ -343,6 +345,11 @@
                 console.log("mini app ready");
                 const tgUser = Telegram.WebApp.initDataUnsafe?.user;
                 console.log(tgUser);
+                const welcome = document.querySelector(".header-welcome");
+
+                welcome.textContent = `${
+                    tgUser.first_name || tgUser.last_name || tgUser.username
+                }${tgUser ? " о" : "О"}ткройте тайны судьбы`;
             }
 
             // Initialize animations
